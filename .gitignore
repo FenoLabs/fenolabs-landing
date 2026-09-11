@@ -1,0 +1,10 @@
+# Assets de diseño y fuentes locales
+*.zip
+*.ai
+Bricolage_Grotesque/
+fenolabs.html
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini

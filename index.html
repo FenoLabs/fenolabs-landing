@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fenolabs — martech desarrollado por marketers</title>
+<meta name="description" content="Un software para convertir el caos de señales de marketing en foco de rentabilidad. Estamos armando la primera versión.">
+<meta property="og:title" content="fenolabs">
+<meta property="og:description" content="Martech desarrollado por marketers. Estamos armando la primera versión.">
+<meta name="theme-color" content="#070B0D">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070B0D;
+    --ink:#EAF2F3;
+    --muted:#6F8287;
+    --teal:#17B4C4;
+    --red:#E5484D;
+    --amber:#F5A524;
+    --green:#30C48D;
+    --tile-gap:clamp(10px,2.2vw,22px);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+    font-optical-sizing:auto;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    min-height:100svh;
+  }
+
+  /* ---------- capa de fondo: el estado de las campañas ---------- */
+  #field{
+    position:fixed; inset:0;
+    display:grid;
+    padding:var(--tile-gap);
+    gap:var(--tile-gap);
+    grid-template-columns:repeat(var(--cols),1fr);
+    grid-template-rows:repeat(var(--rows),1fr);
+    z-index:0;
+    pointer-events:none;
+  }
+  .tile{
+    position:relative;
+    border-radius:6px;
+    background:color-mix(in srgb, var(--c) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--c) 38%, transparent);
+    display:flex; align-items:flex-end;
+    padding:5px;
+    will-change:transform;
+  }
+  .tile .bar{
+    display:block; width:100%;
+    border-radius:3px;
+    background:var(--c);
+    height:var(--h);
+    opacity:.75;
+  }
+  .tile.flash{
+    background:color-mix(in srgb, var(--green) 45%, transparent);
+    border-color:var(--green);
+    transition:background .18s ease, border-color .18s ease;
+  }
+
+  #veil{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:radial-gradient(ellipse 72% 58% at 50% 42%, rgba(7,11,13,.95) 30%, rgba(7,11,13,.74) 56%, rgba(7,11,13,.35) 100%);
+  }
+
+  /* ---------- contenido ---------- */
+  main{
+    position:relative; z-index:2;
+    flex:1;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-align:center;
+    padding:40px 24px 8px;
+  }
+
+  .logo{
+    height:clamp(46px,9vw,92px);
+    width:auto;
+    display:block;
+  }
+  .logo-fallback{
+    font-size:clamp(40px,8.4vw,86px);
+    font-weight:800;
+    letter-spacing:-.045em;
+    line-height:1;
+  }
+
+  .tagline{
+    margin:18px 0 0;
+    font-size:clamp(10.5px,1.25vw,13px);
+    font-weight:500;
+    letter-spacing:.3em;
+    text-indent:.3em;
+    color:var(--muted);
+  }
+
+  .soon{
+    margin:clamp(34px,6.5vh,58px) 0 0;
+    max-width:40ch;
+    font-size:1.8em;
+    font-weight:400;
+    line-height:1.32;
+    letter-spacing:-.02em;
+    text-wrap:balance;
+    color:#B9C9CD;
+  }
+  .tag{
+    display:block;
+    margin-bottom:.35em;
+    font-size:.7em;
+    color:var(--teal);
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .w{font-weight:700;transition:color .25s linear}
+  #w-caos{color:var(--red)}
+  #w-foco{color:var(--muted)}
+  .soon .last{color:var(--muted);display:block;margin-top:.55em;font-size:.62em;letter-spacing:0}
+
+  a.mail{
+    margin-top:clamp(28px,4.5vh,44px);
+    display:inline-block;
+    padding:13px 26px;
+    border-radius:999px;
+    border:1px solid rgba(23,180,196,.42);
+    background:rgba(23,180,196,.08);
+    color:var(--ink);
+    text-decoration:none;
+    font-size:clamp(14px,1.7vw,16px); font-weight:500; letter-spacing:-.01em;
+    transition:background .2s ease,border-color .2s ease;
+  }
+  a.mail:hover{background:rgba(23,180,196,.18);border-color:var(--teal)}
+  a.mail:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+
+  /* ---------- el control ---------- */
+  .control{
+    position:relative; z-index:2;
+    width:min(520px,86vw);
+    margin:0 auto 36px;
+    padding:0 4px;
+  }
+  .scale{
+    text-align:center;
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:.34em;
+    text-indent:.34em;
+    color:#4E6065;
+    margin-bottom:14px;
+    transition:color .25s linear;
+  }
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;
+    width:100%;height:34px;background:transparent;cursor:grab;display:block;
+  }
+  input[type=range]:active{cursor:grabbing}
+  input[type=range]::-webkit-slider-runnable-track{
+    height:2px;border-radius:2px;
+    background:linear-gradient(90deg,var(--red),var(--amber) 45%,var(--teal));
+    opacity:.5;
+  }
+  input[type=range]::-moz-range-track{
+    height:2px;border-radius:2px;
+    background:linear-gradient(90deg,var(--red),var(--amber) 45%,var(--teal));
+    opacity:.5;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;
+    width:26px;height:26px;margin-top:-12px;
+    border-radius:50%;
+    background:var(--ink);
+    border:5px solid var(--bg);
+    box-shadow:0 0 0 1px rgba(255,255,255,.35), 0 0 26px rgba(23,180,196,.5);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:26px;height:26px;border-radius:50%;
+    background:var(--ink);border:5px solid var(--bg);
+    box-shadow:0 0 0 1px rgba(255,255,255,.35), 0 0 26px rgba(23,180,196,.5);
+  }
+  input[type=range]:focus-visible{outline:none}
+  input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 2px var(--teal),0 0 26px rgba(23,180,196,.6)}
+  input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 2px var(--teal),0 0 26px rgba(23,180,196,.6)}
+
+  #toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);
+    z-index:5;
+    padding:11px 18px;border-radius:999px;
+    background:rgba(48,196,141,.14);
+    border:1px solid rgba(48,196,141,.5);
+    color:#BFF0DC;font-size:14px;
+    opacity:0;pointer-events:none;
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  /* el 1.8em manda en desktop; en pantallas chicas se achica para que
+     el correo no quede empujado fuera del viewport */
+  @media (max-width:680px){
+    main{padding-top:52px}
+    .soon{font-size:1.35em;max-width:22ch}
+    .control{margin-bottom:28px}
+  }
+  @media (max-height:620px){
+    .soon{font-size:1.4em;margin-top:24px}
+  }
+</style>
+</head>
+<body>
+
+<div id="field" aria-hidden="true"></div>
+<div id="veil" aria-hidden="true"></div>
+
+<main>
+  <img class="logo" id="logo" src="fenolabs.svg" alt="fenolabs">
+  <p class="tagline">MARTECH DESARROLLADO POR MARKETERS</p>
+
+  <p class="soon">
+    <span class="tag">#PRONTO:</span>
+    Un software para convertir el <span class="w" id="w-caos">CAOS</span> de señales de marketing en <span class="w" id="w-foco">FOCO</span> de rentabilidad.
+    <span class="last">Estamos armando la primera versión.</span>
+  </p>
+
+  <a class="mail" href="mailto:quierosaber@fenolabs.cl">quierosaber@fenolabs.cl</a>
+</main>
+
+<div class="control">
+  <div class="scale" id="scaleLabel">ENFOQUÉMONOS</div>
+  <input type="range" id="slider" min="0" max="100" value="0" aria-label="De caos a foco">
+</div>
+
+<div id="toast" role="status" aria-live="polite">Sentinel: monitoreo de salud de campañas. Primer producto.</div>
+
+<script>
+(function(){
+  const field  = document.getElementById('field');
+  const slider = document.getElementById('slider');
+  const wCaos  = document.getElementById('w-caos');
+  const wFoco  = document.getElementById('w-foco');
+  const scaleL = document.getElementById('scaleLabel');
+  const toast  = document.getElementById('toast');
+  const logo   = document.getElementById('logo');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // si aun no subes fenolabs.svg, cae al wordmark tipografico
+  logo.addEventListener('error', function(){
+    const el=document.createElement('div');
+    el.className='logo-fallback';
+    el.textContent='fenolabs';
+    logo.replaceWith(el);
+  });
+
+  const RED=[229,72,77], AMBER=[245,165,36], GREEN=[48,196,141], TEAL=[23,180,196], MUTED=[111,130,135], DIM=[78,96,101];
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const mix=(c1,c2,t)=>'rgb('+Math.round(lerp(c1[0],c2[0],t))+','+Math.round(lerp(c1[1],c2[1],t))+','+Math.round(lerp(c1[2],c2[2],t))+')';
+
+  let tiles=[];
+
+  function build(){
+    const w=window.innerWidth, h=window.innerHeight;
+    const cols = w<560 ? 4 : w<900 ? 7 : w<1400 ? 10 : 13;
+    const rows = Math.max(4, Math.round(cols * (h/w) * 0.95));
+    field.style.setProperty('--cols',cols);
+    field.style.setProperty('--rows',rows);
+    field.innerHTML='';
+    tiles=[];
+    const total=cols*rows;
+    for(let i=0;i<total;i++){
+      const el=document.createElement('div');
+      el.className='tile';
+      const bar=document.createElement('span');
+      bar.className='bar';
+      el.appendChild(bar);
+      field.appendChild(el);
+      tiles.push({
+        el, bar,
+        chaos: Math.random()<0.42 ? RED : AMBER,
+        calm:  Math.random()<0.22 ? TEAL : GREEN,
+        target: 34 + Math.random()*42,
+        sx: 0.6+Math.random()*1.5,
+        sy: 0.5+Math.random()*1.6,
+        ph: Math.random()*Math.PI*2,
+        ph2:Math.random()*Math.PI*2,
+        nz: Math.random()*Math.PI*2
+      });
+    }
+  }
+
+  let target=0, value=0, auto=true, touched=false;
+
+  function setFromSlider(){
+    touched=true; auto=false;
+    target = slider.value/100;
+  }
+  slider.addEventListener('input', setFromSlider);
+  slider.addEventListener('pointerdown', setFromSlider);
+
+  if(!reduce){
+    setTimeout(function(){ if(!touched) target=1; },900);
+    setTimeout(function(){ if(!touched) target=0.12; },3000);
+  } else {
+    target=1; value=1;
+  }
+
+  function paintCopy(t){
+    wCaos.style.color = mix(RED, MUTED, t);
+    wCaos.style.opacity = String(1 - t*0.4);
+    wFoco.style.color = mix(MUTED, TEAL, t);
+    scaleL.style.color = mix(DIM, TEAL, t);
+  }
+
+  const t0=performance.now();
+  function frame(now){
+    const time=(now-t0)/1000;
+    value += (target-value)*0.075;
+    const t=value;
+    const chaos=1-t;
+
+    if(auto) slider.value = String(Math.round(t*100));
+
+    const amp = chaos*chaos*26;
+    for(let i=0;i<tiles.length;i++){
+      const p=tiles[i];
+      const x = reduce?0:Math.sin(time*p.sx*2.1+p.ph)*amp;
+      const y = reduce?0:Math.cos(time*p.sy*2.4+p.ph2)*amp*0.7;
+      const r = reduce?0:Math.sin(time*p.sx*1.7+p.ph2)*chaos*7;
+      const s = 1 - chaos*0.08;
+      p.el.style.transform='translate3d('+x.toFixed(2)+'px,'+y.toFixed(2)+'px,0) rotate('+r.toFixed(2)+'deg) scale('+s.toFixed(3)+')';
+      const jitter = reduce?0:(Math.sin(time*3.1+p.nz)*0.5+0.5)*62*chaos;
+      const hgt = lerp(12+jitter, p.target, t);
+      p.bar.style.setProperty('--h', hgt.toFixed(1)+'%');
+      p.el.style.setProperty('--c', mix(p.chaos, p.calm, t));
+    }
+    paintCopy(t);
+    requestAnimationFrame(frame);
+  }
+
+  // easter egg: escribe "sentinel"
+  let buf='';
+  window.addEventListener('keydown', function(e){
+    if(e.key.length!==1) return;
+    buf=(buf+e.key.toLowerCase()).slice(-8);
+    if(buf==='sentinel'){
+      buf='';
+      tiles.forEach(function(p,i){
+        setTimeout(function(){
+          p.el.classList.add('flash');
+          setTimeout(function(){ p.el.classList.remove('flash'); },420);
+        }, i*9);
+      });
+      toast.classList.add('on');
+      setTimeout(function(){ toast.classList.remove('on'); },3600);
+    }
+  });
+
+  let rt;
+  window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(build,180); });
+
+  build();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
