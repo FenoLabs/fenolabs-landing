@@ -6,3 +6,4 @@ Landing page de [Fenolabs](https://fenolabs.cl) — martech desarrollado por mar
 
 - `index.html`: Estructura, animación y estilos de la landing page.
 - `fenolabs.svg`: Logo vectorial de Fenolabs.
+- `favicon.png`: Favicon de la web.
