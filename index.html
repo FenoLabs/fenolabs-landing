@@ -12,6 +12,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K4H3DDCXQZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-K4H3DDCXQZ');
+</script>
 <style>
   :root{
     --bg:#070B0D;
@@ -233,7 +242,7 @@
     <span class="last">Estamos armando la primera versión.</span>
   </p>
 
-  <a class="mail" href="mailto:quierosaber@fenolabs.cl">quierosaber@fenolabs.cl</a>
+  <a class="mail" href="mailto:quierosaber@fenolabs.cl" id="mailCta">quierosaber@fenolabs.cl</a>
 </main>
 
 <div class="control">
@@ -252,7 +261,23 @@
   const scaleL = document.getElementById('scaleLabel');
   const toast  = document.getElementById('toast');
   const logo   = document.getElementById('logo');
+  const mailCta = document.getElementById('mailCta');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function track(name, params){
+    if(typeof gtag === 'function') gtag('event', name, params || {});
+  }
+
+  mailCta.addEventListener('click', function(){
+    track('clic_email', { method:'mailto', link_url:'mailto:quierosaber@fenolabs.cl' });
+  });
+
+  let sliderTracked = false;
+  slider.addEventListener('pointerdown', function(){
+    if(sliderTracked) return;
+    sliderTracked = true;
+    track('slider_interact', { slider_name:'caos_a_foco' });
+  });
 
   // si aun no subes fenolabs.svg, cae al wordmark tipografico
   logo.addEventListener('error', function(){
@@ -362,6 +387,7 @@
       });
       toast.classList.add('on');
       setTimeout(function(){ toast.classList.remove('on'); },3600);
+      track('easter_egg_found', { egg_name:'sentinel' });
     }
   });
 
