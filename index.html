@@ -222,6 +222,37 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   #toast.on{opacity:1;transform:translate(-50%,0)}
 
+  #cookieNotice{
+    position:fixed;left:16px;bottom:16px;
+    z-index:6;
+    width:min(300px,calc(100vw - 32px));
+    padding:16px 18px;border-radius:14px;
+    background:rgba(7,11,13,.92);
+    border:1px solid rgba(23,180,196,.35);
+    box-shadow:0 8px 30px rgba(0,0,0,.35);
+    opacity:0;transform:translateY(12px);pointer-events:none;
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  #cookieNotice.on{opacity:1;transform:translateY(0);pointer-events:auto}
+  #cookieNotice p{
+    margin:0 0 12px;font-size:13px;line-height:1.5;color:var(--muted);
+  }
+  #cookieNotice button{
+    display:inline-block;border:none;cursor:pointer;
+    padding:8px 16px;border-radius:999px;
+    background:rgba(23,180,196,.14);
+    border:1px solid rgba(23,180,196,.42);
+    color:var(--ink);font-size:13px;font-weight:500;
+    font-family:inherit;
+    transition:background .2s ease,border-color .2s ease;
+  }
+  #cookieNotice button:hover{background:rgba(23,180,196,.24);border-color:var(--teal)}
+  #cookieNotice button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+  @media (max-width:680px){
+    #cookieNotice{left:12px;right:12px;bottom:12px;width:auto}
+  }
+
   /* el 1.8em manda en desktop; en pantallas chicas se achica para que
      el correo no quede empujado fuera del viewport */
   @media (max-width:680px){
@@ -263,6 +294,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div id="toast" role="status" aria-live="polite">Sentinel: monitoreo de salud de campañas. Primer producto.</div>
 
+<div id="cookieNotice" role="status" aria-live="polite">
+  <p>Usamos cookies mínimas para entender cómo se usa este sitio. No compartimos datos con terceros.</p>
+  <button id="cookieOk" type="button">Entendido</button>
+</div>
+
 <script>
 (function(){
   const field  = document.getElementById('field');
@@ -278,6 +314,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   function track(name, params){
     if(typeof gtag === 'function') gtag('event', name, params || {});
   }
+
+  (function(){
+    const KEY='fenolabs_cookie_ack';
+    const notice = document.getElementById('cookieNotice');
+    const ok = document.getElementById('cookieOk');
+    let ack;
+    try{ ack = localStorage.getItem(KEY); }catch(e){ ack = null; }
+    if(!ack) requestAnimationFrame(function(){ notice.classList.add('on'); });
+    ok.addEventListener('click', function(){
+      try{ localStorage.setItem(KEY,'1'); }catch(e){}
+      notice.classList.remove('on');
+      track('cookie_notice_ack');
+    });
+  })();
 
   mailCta.addEventListener('click', function(){
     track('clic_email', { method:'mailto', link_url:'mailto:quierosaber@fenolabs.cl' });
