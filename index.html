@@ -306,6 +306,69 @@
   <input type="range" id="slider" min="0" max="100" value="0" aria-label="De caos a foco">
 </div>
 
+<!-- Contenido debajo de la portada. Estilos en contenido.css; la portada no cambia. -->
+<link rel="stylesheet" href="contenido.css">
+<div class="cont" id="contenido">
+  <a class="cont-cue" href="#quienes">Más sobre fenolabs <span aria-hidden="true">↓</span></a>
+
+  <section class="cont-band" id="quienes" aria-labelledby="t-quienes">
+    <div class="cont-wrap">
+      <p class="cont-kicker">QUIÉNES SOMOS</p>
+      <h2 id="t-quienes">Software de marketing, hecho por quienes lo usan.</h2>
+      <p class="cont-lead"><strong>FenoLabs es una empresa chilena de software de marketing (martech).</strong> Desarrollamos herramientas para agencias de publicidad y anunciantes que necesitan tomar decisiones con datos.</p>
+    </div>
+  </section>
+
+  <section class="cont-band" id="sentinel" aria-labelledby="t-sentinel">
+    <div class="cont-wrap">
+      <p class="cont-kicker">NUESTRO PRODUCTO</p>
+      <h2 id="t-sentinel">Sentinel</h2>
+      <p class="cont-sub">Monitoreo de campañas publicitarias para agencias y anunciantes.</p>
+      <div class="cont-card">
+        <span class="cont-luces" aria-hidden="true"><i class="r"></i><i class="a"></i><i class="v"></i></span>
+        <p>Cada empresa conecta sus propias cuentas de Meta y Google Ads y elige qué cuentas comparte. Sentinel lee, <strong>solo en lectura</strong>, las métricas de sus campañas, y con eso:</p>
+        <ul class="cont-lista">
+          <li>compara cada campaña con la meta del mes;</li>
+          <li>avisa cuando una campaña se desvía;</li>
+          <li>sugiere ajustes al equipo, que es quien decide;</li>
+          <li>verifica si las decisiones que el equipo registró se ejecutaron.</li>
+        </ul>
+        <p class="cont-nota">Sentinel nunca crea, edita ni pausa anuncios. Los datos de cada empresa solo los ven sus usuarios y no se usan para entrenar modelos de inteligencia artificial.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cont-band" id="datos" aria-labelledby="t-datos">
+    <div class="cont-wrap">
+      <p class="cont-kicker">TUS DATOS</p>
+      <h2 id="t-datos">Cómo pedir el borrado de tus datos</h2>
+      <p class="cont-lead">Si tu empresa usa Sentinel y quiere que borremos sus datos, escríbenos a <a href="mailto:quierosaber@fenolabs.cl">quierosaber@fenolabs.cl</a> pidiendo el borrado. El detalle está en la <a href="https://sentinel.fenolabs.cl/privacidad#eliminacion">política de privacidad</a>.</p>
+    </div>
+  </section>
+
+  <footer class="cont-pie" aria-label="Datos legales y enlaces">
+    <div class="cont-wrap cont-pie-grid">
+      <div>
+        <p class="cont-pie-marca">FenoLabs</p>
+        <dl class="cont-legal">
+          <dt>Razón social</dt><dd><span class="cont-pc">[razón social exacta — la verificada en Meta]</span></dd>
+          <dt>RUT</dt><dd><span class="cont-pc">[RUT]</span></dd>
+          <dt>Dirección</dt><dd><span class="cont-pc">[dirección]</span></dd>
+          <dt>Contacto</dt><dd><a href="mailto:quierosaber@fenolabs.cl">quierosaber@fenolabs.cl</a></dd>
+        </dl>
+      </div>
+      <nav class="cont-enlaces" aria-label="Legal">
+        <a href="https://sentinel.fenolabs.cl/privacidad">Política de privacidad</a>
+        <a href="https://sentinel.fenolabs.cl/terminos">Términos de uso</a>
+        <a href="mailto:quierosaber@fenolabs.cl">Contacto</a>
+        <button type="button" class="cont-boton-enlace" data-abrir-cookies>Configurar cookies</button>
+      </nav>
+      <p class="cont-copy">© 2026 FenoLabs · Martech desarrollado por marketers</p>
+    </div>
+  </footer>
+</div>
+<script src="contenido.js" defer></script>
+
 <div id="toast" role="status" aria-live="polite">Sentinel: monitoreo de salud de campañas. Primer producto.</div>
 
 <div id="cookieNotice" role="status" aria-live="polite">

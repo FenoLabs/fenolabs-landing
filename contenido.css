@@ -1,0 +1,139 @@
+/* ============================================================================================
+   Secciones debajo de la portada (quiénes somos, Sentinel, borrado de datos, pie legal).
+
+   La portada (main + .control) no cambia: sigue ocupando la primera pantalla completa. Este
+   archivo solo habilita el scroll y agrega lo de abajo, con los mismos tokens de color y la
+   misma tipografía que la portada.
+
+   Va en un archivo aparte, enlazado desde el <body>, para no tocar el <head> ni depender de
+   estilos en línea.
+   ============================================================================================ */
+
+/* La portada original no tenía scroll (overflow:hidden y altura fija). Se reabre en vertical. */
+html,body{height:auto}
+body{overflow:visible;overflow-x:clip}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Con contenido debajo, `main{flex:1}` ya no tiene espacio libre que llenar y la portada se
+   achicaría. Se le fija el alto mínimo para que main + .control sigan midiendo 100svh:
+   .control mide 63px más su margen inferior (36px; 28px bajo 680px). */
+main{min-height:calc(100svh - 99px)}
+@media (max-width:680px){main{min-height:calc(100svh - 91px)}}
+
+.cont{
+  position:relative;z-index:2;
+  width:100%;
+  background:linear-gradient(180deg,rgba(7,11,13,0) 0,var(--bg) 180px);
+  color:var(--ink);
+  font-family:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+}
+
+/* Aviso discreto en el margen bajo el control, para que se sepa que hay más abajo. */
+.cont-cue{
+  display:block;width:max-content;
+  margin:-30px auto 0;
+  padding:4px 10px;
+  font-size:11px;font-weight:500;letter-spacing:.28em;text-indent:.28em;
+  color:var(--muted);text-decoration:none;text-transform:uppercase;
+  border-radius:999px;
+  transition:color .2s ease;
+}
+.cont-cue:hover{color:var(--teal)}
+@media (max-width:680px){.cont-cue{margin-top:-26px}}
+
+.cont-wrap{
+  width:100%;max-width:880px;margin-inline:auto;
+  padding-left:max(24px,env(safe-area-inset-left,0px));
+  padding-right:max(24px,env(safe-area-inset-right,0px));
+}
+
+.cont-band{padding-block:clamp(56px,9vw,104px)}
+.cont-band + .cont-band{border-top:1px solid rgba(234,242,243,.06)}
+.cont-band:first-of-type{padding-top:clamp(96px,14vw,150px)}
+
+.cont-kicker{
+  margin:0 0 16px;
+  font-size:12px;font-weight:700;letter-spacing:.3em;
+  color:var(--teal);
+}
+.cont h2{
+  margin:0;
+  font-size:clamp(28px,4.6vw,44px);font-weight:700;
+  line-height:1.08;letter-spacing:-.025em;
+  text-wrap:balance;
+}
+.cont-lead,.cont-sub{
+  margin:18px 0 0;max-width:60ch;
+  font-size:clamp(16px,1.9vw,19px);line-height:1.55;
+  color:#B9C9CD;
+}
+.cont-lead strong{color:var(--ink);font-weight:700}
+.cont-sub{margin-top:10px}
+
+.cont a{color:var(--ink);text-decoration-color:rgba(23,180,196,.6);text-underline-offset:3px}
+.cont a:hover{color:var(--teal)}
+.cont a:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:4px}
+
+/* Tarjeta de Sentinel */
+.cont-card{
+  margin-top:32px;max-width:720px;
+  padding:clamp(22px,3.4vw,34px);
+  border-radius:16px;
+  background:rgba(23,180,196,.06);
+  border:1px solid rgba(23,180,196,.28);
+}
+.cont-card p{margin:0;font-size:clamp(15.5px,1.7vw,17px);line-height:1.6;color:var(--ink)}
+.cont-card strong{font-weight:700}
+.cont-luces{display:inline-flex;gap:7px;margin-bottom:18px}
+.cont-luces i{display:block;width:11px;height:11px;border-radius:50%}
+.cont-luces .r{background:var(--red)}
+.cont-luces .a{background:var(--amber)}
+.cont-luces .v{background:var(--green)}
+.cont-lista{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+.cont-lista li{
+  position:relative;padding-left:24px;
+  font-size:clamp(15px,1.6vw,16.5px);line-height:1.5;color:#B9C9CD;
+}
+.cont-lista li::before{
+  content:"";position:absolute;left:2px;top:.55em;
+  width:8px;height:8px;border-radius:50%;background:var(--teal);
+}
+.cont-card .cont-nota{
+  margin-top:20px;padding-top:16px;
+  border-top:1px solid rgba(234,242,243,.08);
+  font-size:14px;line-height:1.55;color:var(--muted);
+}
+
+/* Pie legal */
+.cont-pie{
+  border-top:1px solid rgba(234,242,243,.08);
+  padding-block:44px max(36px,env(safe-area-inset-bottom,0px));
+  font-size:14px;color:var(--muted);
+}
+.cont-pie-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px}
+@media (max-width:680px){.cont-pie-grid{grid-template-columns:1fr}}
+.cont-pie-marca{margin:0 0 12px;font-size:17px;font-weight:700;color:var(--ink)}
+.cont-legal{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px}
+.cont-legal dt{color:var(--muted)}
+.cont-legal dd{margin:0;color:#B9C9CD;min-width:0;overflow-wrap:anywhere}
+.cont-enlaces{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.cont-enlaces a{color:#B9C9CD;text-decoration:none}
+.cont-enlaces a:hover{color:var(--teal);text-decoration:underline}
+/* «Configurar cookies» es un botón (abre el aviso, no navega) con aspecto de enlace del pie. */
+.cont-boton-enlace{
+  padding:0;border:0;background:none;cursor:pointer;
+  font:inherit;color:#B9C9CD;text-align:left;
+}
+.cont-boton-enlace:hover{color:var(--teal);text-decoration:underline}
+.cont-boton-enlace:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:4px}
+.cont-copy{grid-column:1/-1;margin:0;padding-top:18px;border-top:1px solid rgba(234,242,243,.06)}
+
+/* Espacios a completar: deliberadamente llamativos, para que no se publiquen sin llenar. */
+.cont-pc{
+  display:inline-block;
+  padding:1px 8px;border-radius:6px;
+  border:1px dashed var(--amber);
+  background:rgba(245,165,36,.1);
+  color:var(--amber);font-style:italic;
+}
