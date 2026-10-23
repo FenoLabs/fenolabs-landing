@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-W67PNSZG');</script>
-<!-- End Google Tag Manager -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Sitio discreto: que no aparezca en buscadores. Meta y Google igual pueden abrirlo y leerlo. -->
+<meta name="robots" content="noindex, nofollow">
 <title>fenolabs — martech desarrollado por marketers</title>
 <meta name="description" content="Un software para convertir el caos de señales de marketing en foco de rentabilidad. Estamos armando la primera versión.">
 <meta property="og:title" content="fenolabs">
@@ -19,14 +14,36 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-K4H3DDCXQZ"></script>
+<!-- Google Tag Manager (GTM-W67PNSZG) y Google Analytics (G-K4H3DDCXQZ): NO se cargan hasta
+     que la persona acepta en el aviso de cookies. Antes de eso no sale ninguna petición a Google.
+     La elección se guarda en localStorage («fenolabs_consent»: aceptado | rechazado). -->
 <script>
+(function(){
+  var KEY = 'fenolabs_consent';
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-K4H3DDCXQZ');
+  function cargar(){
+    if (window.__fenolabsTags) return;
+    window.__fenolabsTags = true;
+    window.gtag = function(){ dataLayer.push(arguments); };
+    dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+    var gtm = document.createElement('script');
+    gtm.async = true;
+    gtm.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-W67PNSZG';
+    document.head.appendChild(gtm);
+    var ga = document.createElement('script');
+    ga.async = true;
+    ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-K4H3DDCXQZ';
+    document.head.appendChild(ga);
+    gtag('js', new Date());
+    gtag('config', 'G-K4H3DDCXQZ');
+  }
+  window.fenolabsConsent = {
+    cargar: cargar,
+    leer: function(){ try { return localStorage.getItem(KEY); } catch (e) { return null; } },
+    guardar: function(v){ try { localStorage.setItem(KEY, v); } catch (e) {} }
+  };
+  if (window.fenolabsConsent.leer() === 'aceptado') cargar();
+})();
 </script>
 <style>
   :root{
@@ -248,6 +265,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   #cookieNotice button:hover{background:rgba(23,180,196,.24);border-color:var(--teal)}
   #cookieNotice button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  #cookieNotice .cookie-btns{display:flex;gap:8px;flex-wrap:wrap}
 
   @media (max-width:680px){
     #cookieNotice{left:12px;right:12px;bottom:12px;width:auto}
@@ -266,10 +284,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W67PNSZG"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <div id="field" aria-hidden="true"></div>
 <div id="veil" aria-hidden="true"></div>
@@ -295,8 +309,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div id="toast" role="status" aria-live="polite">Sentinel: monitoreo de salud de campañas. Primer producto.</div>
 
 <div id="cookieNotice" role="status" aria-live="polite">
-  <p>Usamos cookies mínimas para entender cómo se usa este sitio. No compartimos datos con terceros.</p>
-  <button id="cookieOk" type="button">Entendido</button>
+  <p>Con tu permiso, usamos Google Analytics, que deja cookies de Google, para entender cómo se usa este sitio.</p>
+  <div class="cookie-btns">
+    <button id="cookieOk" type="button">Aceptar</button>
+    <button id="cookieNo" type="button">Rechazar</button>
+  </div>
 </div>
 
 <script>
@@ -315,17 +332,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if(typeof gtag === 'function') gtag('event', name, params || {});
   }
 
+  // Aviso de cookies. Google (GTM y GA4) se carga solo con «Aceptar»; mientras no se acepte,
+  // `gtag` no existe y `track()` no manda nada. La marca vieja «fenolabs_cookie_ack» (del aviso
+  // «Entendido», que no pedía permiso) se ignora a propósito: esas visitas vuelven a ver el aviso.
   (function(){
-    const KEY='fenolabs_cookie_ack';
+    const C = window.fenolabsConsent;
     const notice = document.getElementById('cookieNotice');
     const ok = document.getElementById('cookieOk');
-    let ack;
-    try{ ack = localStorage.getItem(KEY); }catch(e){ ack = null; }
-    if(!ack) requestAnimationFrame(function(){ notice.classList.add('on'); });
+    const no = document.getElementById('cookieNo');
+    if(!C.leer()) requestAnimationFrame(function(){ notice.classList.add('on'); });
     ok.addEventListener('click', function(){
-      try{ localStorage.setItem(KEY,'1'); }catch(e){}
+      C.guardar('aceptado');
       notice.classList.remove('on');
-      track('cookie_notice_ack');
+      C.cargar();
+      track('cookie_consent', { choice:'accepted' });
+    });
+    no.addEventListener('click', function(){
+      C.guardar('rechazado');
+      notice.classList.remove('on');
     });
   })();
 
